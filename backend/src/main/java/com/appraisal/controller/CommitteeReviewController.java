@@ -24,4 +24,9 @@ public class CommitteeReviewController {
     public ResponseEntity<List<CommitteeReview>> getByCycle(@PathVariable Long cycleId) {
         return ResponseEntity.ok(service.getReviewsByCycle(cycleId));
     }
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<CommitteeReview>> getPendingReviews() {
+        return ResponseEntity.ok(service.getAllReviews());
+    }
 }

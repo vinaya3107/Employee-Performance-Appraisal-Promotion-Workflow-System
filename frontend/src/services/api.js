@@ -6,24 +6,24 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.token) {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user?.token) {
       config.headers.Authorization = `Bearer ${user.token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      // Potentially clear user and redirect to login if session expires
-      // localStorage.removeItem('user');
-      // window.location.href = '/login';
+    if (error.response?.status === 401) {
+      // Token expired — clear and redirect
+      localStorage.removeItem('user');
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

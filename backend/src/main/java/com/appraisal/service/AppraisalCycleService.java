@@ -38,6 +38,12 @@ public class AppraisalCycleService {
     }
 
     public List<AppraisalCycle> getActiveCycles() {
-        return repository.findByStatus(CycleStatus.ACTIVE);
+        List<CycleStatus> activeStatuses = List.of(
+            CycleStatus.ACTIVE,
+            CycleStatus.SELF_ASSESSMENT,
+            CycleStatus.MANAGER_REVIEW,
+            CycleStatus.COMMITTEE_REVIEW
+        );
+        return repository.findByStatusIn(activeStatuses);
     }
 }

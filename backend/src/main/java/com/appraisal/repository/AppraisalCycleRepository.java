@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface AppraisalCycleRepository extends JpaRepository<AppraisalCycle, Long> {
     List<AppraisalCycle> findByStatus(CycleStatus status);
+    List<AppraisalCycle> findByStatusIn(List<CycleStatus> statuses);
     Optional<AppraisalCycle> findByStatusAndCycleName(CycleStatus status, String cycleName);
 }

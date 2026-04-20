@@ -38,6 +38,8 @@ public class AuthService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .department(user.getDepartment())
+                .designation(user.getDesignation())
                 .build();
     }
 }

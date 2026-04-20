@@ -28,4 +28,8 @@ public class CommitteeReviewService {
     public List<CommitteeReview> getReviewsByCycle(Long cycleId) {
         return repository.findByCycleId(cycleId);
     }
+
+    public List<CommitteeReview> getAllReviews() {
+        return repository.findAll();
+    }
 }

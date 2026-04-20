@@ -44,6 +44,12 @@ public class UserController {
         return ResponseEntity.ok(service.getUsersByRole(role));
     }
 
+    @GetMapping(params = "role")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR_MANAGER', 'MANAGER')")
+    public ResponseEntity<List<User>> getUsersByRoleParam(@RequestParam Role role) {
+        return ResponseEntity.ok(service.getUsersByRole(role));
+    }
+
     @GetMapping("/{id}/direct-reports")
     @PreAuthorize("hasAnyRole('ADMIN', 'HR_MANAGER', 'MANAGER')")
     public ResponseEntity<List<User>> getDirectReports(@PathVariable Long id) {

@@ -25,12 +25,15 @@ const CreateUser = () => {
       const fetchManagers = async () => {
         try {
           const response = await api.get('/users/role/MANAGER');
-          setManagers(response.data);
+          setManagers(response.data || []);
         } catch (err) {
-          console.error('Failed to fetch managers');
+          console.error('Failed to fetch managers', err);
         }
       };
       fetchManagers();
+    } else {
+      setManagers([]);
+      setFormData(prev => ({ ...prev, managerId: '' }));
     }
   }, [formData.role]);
 

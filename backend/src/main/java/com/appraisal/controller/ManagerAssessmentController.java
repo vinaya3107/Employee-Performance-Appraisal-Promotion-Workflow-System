@@ -26,4 +26,11 @@ public class ManagerAssessmentController {
             @PathVariable Long cycleId) {
         return ResponseEntity.ok(service.getAssessmentsByManagerAndCycle(managerId, cycleId));
     }
+
+    @GetMapping("/employee/{employeeId}/cycle/{cycleId}")
+    public ResponseEntity<List<ManagerAssessment>> getByEmployeeAndCycle(
+            @PathVariable Long employeeId,
+            @PathVariable Long cycleId) {
+        return ResponseEntity.ok(service.getAssessmentsByEmployeeAndCycle(employeeId, cycleId));
+    }
 }

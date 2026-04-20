@@ -1,5 +1,6 @@
 package com.appraisal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ManagerAssessment {
 
     @Id
@@ -40,7 +42,7 @@ public class ManagerAssessment {
     private Integer managerRating;
 
     @Column(length = 1000)
-    private String managerComments;
+    private String managerComment;
 
     private LocalDateTime submittedAt;
 }
