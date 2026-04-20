@@ -23,7 +23,9 @@ const PromotionBoard = () => {
     try {
       const eligRes = await api.get('/promotions/eligible');
       setEligibleList(eligRes.data || []);
-    } catch { toast.error('Failed to load eligible list'); }
+      const histRes = await api.get('/promotions/all');
+      setPromotionHistory(histRes.data || []);
+    } catch { toast.error('Failed to load promotion data'); }
     setLoading(false);
   };
 
@@ -197,11 +199,63 @@ const PromotionBoard = () => {
       )}
 
       {activeTab === 'history' && (
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8">
-          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <Clock size={18} className="text-indigo-500" /> Promotion History
-          </h3>
-          <p className="text-slate-400 text-sm italic">Select an employee from the eligible list to view history, or browse approved promotions here.</p>
+        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="p-8 border-b border-slate-50">
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <Clock size={18} className="text-indigo-500" /> Approved Promotions
+            </h3>
+            <p className="text-slate-500 text-sm mt-1">Review the history of finalized career advancements.</p>
+          </div>
+          
+          {promotionHistory.length === 0 ? (
+            <div className="p-16 text-center">
+              <Clock size={40} className="mx-auto mb-3 text-slate-200" />
+              <p className="text-slate-400 italic">No promotion history found.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider">
+                  <tr>
+                    <th className="px-8 py-4">Employee</th>
+                    <th className="px-8 py-4">Designation Change</th>
+                    <th className="px-8 py-4">New Salary</th>
+                    <th className="px-8 py-4">Effective Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {promotionHistory.map(promo => (
+                    <tr key={promo.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-8 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-sm">
+                            {promo.employee?.name?.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-900 text-sm">{promo.employee?.name}</p>
+                            <p className="text-xs text-slate-400">{promo.employee?.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-4">
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-400 line-through">{promo.oldDesignation}</span>
+                          <ChevronRight size={12} className="text-slate-300" />
+                          <span className="text-emerald-600 font-bold">{promo.newDesignation}</span>
+                        </div>
+                      </td>
+                      <td className="px-8 py-4 text-sm font-semibold text-slate-700">
+                        ₹{promo.newSalary?.toLocaleString()}
+                      </td>
+                      <td className="px-8 py-4 text-xs text-slate-500">
+                        {new Date(promo.effectiveDate).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
     </div>

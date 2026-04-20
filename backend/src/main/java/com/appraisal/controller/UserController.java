@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR_MANAGER')")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());
     }
@@ -54,5 +54,18 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'HR_MANAGER', 'MANAGER')")
     public ResponseEntity<List<User>> getDirectReports(@PathVariable Long id) {
         return ResponseEntity.ok(service.getDirectReports(id));
+    }
+
+    @PutMapping("/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> updateRole(@PathVariable Long id, @RequestParam Role role) {
+        return ResponseEntity.ok(service.updateUserRole(id, role));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        service.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

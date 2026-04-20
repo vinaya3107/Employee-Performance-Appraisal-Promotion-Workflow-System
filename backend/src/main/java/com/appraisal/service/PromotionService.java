@@ -36,4 +36,8 @@ public class PromotionService {
     public List<PromotionRecord> getPromotionsByEmployee(Long employeeId) {
         return repository.findByEmployeeId(employeeId);
     }
+
+    public List<PromotionRecord> getAllPromotions() {
+        return repository.findAll();
+    }
 }

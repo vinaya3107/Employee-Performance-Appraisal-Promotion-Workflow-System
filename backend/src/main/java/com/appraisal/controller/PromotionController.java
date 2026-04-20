@@ -30,4 +30,9 @@ public class PromotionController {
     public ResponseEntity<List<PromotionRecord>> getPromotionsByEmployee(@PathVariable Long employeeId) {
         return ResponseEntity.ok(service.getPromotionsByEmployee(employeeId));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PromotionRecord>> getAllPromotions() {
+        return ResponseEntity.ok(service.getAllPromotions());
+    }
 }

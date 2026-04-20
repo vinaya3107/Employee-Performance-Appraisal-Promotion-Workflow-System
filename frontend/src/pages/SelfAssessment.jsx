@@ -47,6 +47,7 @@ const SelfAssessment = () => {
 
         setAssessments(initial);
       } catch (err) {
+        console.error('Data loading error:', err.response?.data || err.message);
         toast.error('Failed to load assessment data');
       } finally {
         setLoading(false);
@@ -116,8 +117,8 @@ const SelfAssessment = () => {
         toast.success('Progress saved as draft');
       }
     } catch (err) {
-      const msg = err.response?.data || err.message || 'Failed to save assessment';
-      toast.error(typeof msg === 'string' ? msg : 'Failed to save assessment. Check cycle stage.');
+      console.error('Self-assessment save error:', err.response?.data || err.message);
+      toast.error(`Failed to save assessment: ${err.response?.data || 'Check that the cycle is in the correct stage.'}`);
     } finally {
       setSaving(false);
     }

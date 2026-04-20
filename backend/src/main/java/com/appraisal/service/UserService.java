@@ -82,4 +82,15 @@ public class UserService {
     public List<User> getDirectReports(Long managerId) {
         return repository.findByManagerId(managerId);
     }
+
+    public User updateUserRole(Long id, Role role) {
+        User user = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setRole(role);
+        return repository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        repository.deleteById(id);
+    }
 }
