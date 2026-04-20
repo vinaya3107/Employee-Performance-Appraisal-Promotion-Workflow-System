@@ -26,6 +26,7 @@ const Sidebar = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'HR_MANAGER', 'REVIEW_COMMITTEE', 'MANAGER', 'EMPLOYEE'] },
+    { name: 'Create User', path: '/create-user', icon: UserCircle, roles: ['ADMIN', 'HR_MANAGER'] },
     { name: 'My Assessment', path: '/self-assessment', icon: UserCircle, roles: ['EMPLOYEE', 'MANAGER'] },
     { name: 'Manager Reviews', path: '/manager-reviews', icon: ClipboardCheck, roles: ['MANAGER'] },
     { name: 'Committee Review', path: '/committee-reviews', icon: Users, roles: ['REVIEW_COMMITTEE'] },

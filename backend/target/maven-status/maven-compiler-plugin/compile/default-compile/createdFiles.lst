@@ -31,6 +31,7 @@ com\appraisal\dto\RegisterRequest$RegisterRequestBuilder.class
 com\appraisal\model\PerformanceKPI.class
 com\appraisal\controller\AppraisalCycleController.class
 com\appraisal\dto\AuthResponse$AuthResponseBuilder.class
+com\appraisal\config\DataSeeder.class
 com\appraisal\model\CommitteeReview.class
 com\appraisal\repository\PerformanceKPIRepository.class
 com\appraisal\model\enums\Role.class

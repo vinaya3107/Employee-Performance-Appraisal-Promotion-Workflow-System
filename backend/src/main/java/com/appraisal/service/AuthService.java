@@ -21,32 +21,6 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(RegisterRequest request) {
-        User manager = null;
-        if (request.getManagerId() != null) {
-            manager = repository.findById(request.getManagerId()).orElse(null);
-        }
-
-        var user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .department(request.getDepartment())
-                .designation(request.getDesignation())
-                .joiningDate(request.getJoiningDate())
-                .manager(manager)
-                .build();
-        repository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        return AuthResponse.builder()
-                .token(jwtToken)
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
-    }
 
     public AuthResponse authenticate(AuthRequest request) {
         authenticationManager.authenticate(

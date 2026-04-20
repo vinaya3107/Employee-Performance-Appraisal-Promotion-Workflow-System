@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import CreateUser from './pages/CreateUser';
 import Dashboard from './pages/Dashboard';
 import SelfAssessment from './pages/SelfAssessment';
 import HRManagement from './pages/HRManagement';
@@ -18,7 +18,6 @@ function App() {
       <Toaster position="top-right" />
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
@@ -72,6 +71,17 @@ function App() {
             <ProtectedRoute allowedRoles={['HR_MANAGER', 'ADMIN']}>
               <Layout>
                 <HRManagement />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/create-user" 
+          element={
+            <ProtectedRoute allowedRoles={['HR_MANAGER', 'ADMIN']}>
+              <Layout>
+                <CreateUser />
               </Layout>
             </ProtectedRoute>
           } 
