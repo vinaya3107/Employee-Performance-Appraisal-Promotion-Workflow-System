@@ -213,8 +213,14 @@ const EmployeeDashboard = () => {
                     <td className="py-4 font-bold text-slate-800">{promo.newDesignation}</td>
                     <td className="py-4 text-sm text-slate-500">{promo.effectiveDate}</td>
                     <td className="py-4 text-right">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                        <CheckCircle2 size={10} /> Applied
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
+                        ${promo.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' : 
+                          promo.status === 'REJECTED' ? 'bg-rose-100 text-rose-700' : 
+                          'bg-amber-100 text-amber-700'}`}>
+                        {promo.status === 'APPROVED' ? <CheckCircle2 size={10} /> : 
+                         promo.status === 'REJECTED' ? <AlertCircle size={10} /> : 
+                         <Clock size={10} />}
+                        {promo.status || 'APPLIED'}
                       </span>
                     </td>
                   </tr>

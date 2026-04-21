@@ -50,16 +50,26 @@ const PromotionBoard = () => {
         oldDesignation: selectedEmp.employee.designation,
         newDesignation: promoForm.newDesignation,
         newSalary: salary,
-        approvedBy: { id: user.id },
+        // status is set to APPLIED by default in backend
       };
-      await api.post('/promotions/approve', payload);
-      toast.success(`Promotion approved for ${selectedEmp.employee.name}!`);
+      await api.post('/promotions/apply', payload);
+      toast.success(`Promotion initiated for ${selectedEmp.employee.name}!`);
       setSelectedEmp(null);
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.message || err.response?.data || 'Failed to approve promotion');
+      toast.error(err.response?.data?.message || err.response?.data || 'Failed to initiate promotion');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleStatusUpdate = async (id, action) => {
+    try {
+      await api.put(`/promotions/${action}/${id}`);
+      toast.success(`Promotion ${action}d successfully`);
+      fetchData();
+    } catch (err) {
+      toast.error(err.response?.data?.message || `Failed to ${action} promotion`);
     }
   };
 
@@ -81,7 +91,7 @@ const PromotionBoard = () => {
           <button key={tab} onClick={() => setActiveTab(tab)}
             className={`px-6 py-2 rounded-xl text-sm font-semibold capitalize transition-all
               ${activeTab === tab ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}>
-            {tab === 'eligible' ? `Eligible (${eligibleList.length})` : 'History'}
+            {tab === 'eligible' ? `Eligible (${eligibleList.length})` : 'Workflow History'}
           </button>
         ))}
       </div>
@@ -184,14 +194,14 @@ const PromotionBoard = () => {
                   <button type="submit" disabled={saving}
                     className="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                     <CheckCircle2 size={18} />
-                    {saving ? 'Approving...' : 'Approve Promotion'}
+                    {saving ? 'Initiating...' : 'Submit Application'}
                   </button>
                 </form>
               </div>
             ) : (
               <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center flex flex-col items-center justify-center h-full min-h-[400px]">
                 <TrendingUp size={48} className="mb-4 text-slate-200" />
-                <p className="text-slate-400 font-medium">Select a candidate to finalize their promotion.</p>
+                <p className="text-slate-400 font-medium">Select a candidate to initiate their promotion.</p>
               </div>
             )}
           </div>
@@ -202,9 +212,9 @@ const PromotionBoard = () => {
         <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="p-8 border-b border-slate-50">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Clock size={18} className="text-indigo-500" /> Approved Promotions
+              <Clock size={18} className="text-indigo-500" /> Promotion Workflow History
             </h3>
-            <p className="text-slate-500 text-sm mt-1">Review the history of finalized career advancements.</p>
+            <p className="text-slate-500 text-sm mt-1">Review the history of initiated and finalized career advancements.</p>
           </div>
           
           {promotionHistory.length === 0 ? (
@@ -218,9 +228,10 @@ const PromotionBoard = () => {
                 <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider">
                   <tr>
                     <th className="px-8 py-4">Employee</th>
+                    <th className="px-8 py-4">Status</th>
                     <th className="px-8 py-4">Designation Change</th>
                     <th className="px-8 py-4">New Salary</th>
-                    <th className="px-8 py-4">Effective Date</th>
+                    <th className="px-8 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
@@ -238,17 +249,44 @@ const PromotionBoard = () => {
                         </div>
                       </td>
                       <td className="px-8 py-4">
+                        <span className={`inline-flex px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
+                          ${promo.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' : 
+                            promo.status === 'REJECTED' ? 'bg-rose-100 text-rose-700' : 
+                            'bg-amber-100 text-amber-700'}`}>
+                          {promo.status || 'APPLIED'}
+                        </span>
+                      </td>
+                      <td className="px-8 py-4">
                         <div className="flex items-center gap-2 text-xs">
                           <span className="text-slate-400 line-through">{promo.oldDesignation}</span>
                           <ChevronRight size={12} className="text-slate-300" />
-                          <span className="text-emerald-600 font-bold">{promo.newDesignation}</span>
+                          <span className="text-indigo-600 font-bold">{promo.newDesignation}</span>
                         </div>
                       </td>
                       <td className="px-8 py-4 text-sm font-semibold text-slate-700">
                         ₹{promo.newSalary?.toLocaleString()}
                       </td>
-                      <td className="px-8 py-4 text-xs text-slate-500">
-                        {new Date(promo.effectiveDate).toLocaleDateString()}
+                      <td className="px-8 py-4 text-right">
+                        {promo.status === 'APPLIED' ? (
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={() => handleStatusUpdate(promo.id, 'approve')}
+                              className="px-3 py-1.5 bg-emerald-600 text-white text-[10px] font-bold rounded-lg hover:bg-emerald-700"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleStatusUpdate(promo.id, 'reject')}
+                              className="px-3 py-1.5 bg-rose-600 text-white text-[10px] font-bold rounded-lg hover:bg-rose-700"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-400 italic">
+                            Done on {new Date(promo.effectiveDate).toLocaleDateString()}
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

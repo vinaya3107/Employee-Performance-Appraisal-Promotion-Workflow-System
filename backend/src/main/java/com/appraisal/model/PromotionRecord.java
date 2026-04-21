@@ -42,4 +42,8 @@ public class PromotionRecord {
     @JoinColumn(name = "approved_by")
     @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled", "username", "password", "manager", "createdAt"})
     private User approvedBy;
+
+    @Column(name = "status", nullable = false)
+    @Builder.Default
+    private String status = "APPLIED";
 }

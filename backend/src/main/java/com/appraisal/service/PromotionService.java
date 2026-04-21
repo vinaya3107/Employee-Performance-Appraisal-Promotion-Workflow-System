@@ -18,6 +18,7 @@ public class PromotionService {
 
     private final PromotionRecordRepository repository;
     private final AppraisalSummaryRepository summaryRepository;
+    private final com.appraisal.repository.UserRepository userRepository;
 
     public List<AppraisalSummary> getEligiblePromotions() {
         return summaryRepository.findByOverallRating(OverallRating.APPROVED)
@@ -26,10 +27,41 @@ public class PromotionService {
                 .collect(Collectors.toList());
     }
 
-    public PromotionRecord approvePromotion(PromotionRecord record) {
+    public PromotionRecord applyForPromotion(PromotionRecord record) {
+        record.setStatus("APPLIED");
         record.setEffectiveDate(LocalDate.now());
-        // Assume simple 20% mock hike.
-        record.setNewSalary(record.getNewSalary() != null ? record.getNewSalary() : 100000.0 * 1.20);
+        return repository.save(record);
+    }
+
+    public PromotionRecord approvePromotion(Long id) {
+        PromotionRecord record = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Promotion record not found"));
+
+        if ("APPROVED".equals(record.getStatus())) {
+            throw new RuntimeException("Promotion already approved");
+        }
+
+        record.setStatus("APPROVED");
+        record.setEffectiveDate(LocalDate.now());
+
+        // Update employee details
+        com.appraisal.model.User employee = record.getEmployee();
+        employee.setDesignation(record.getNewDesignation());
+        employee.setSalary(record.getNewSalary());
+        userRepository.save(employee);
+
+        return repository.save(record);
+    }
+
+    public PromotionRecord rejectPromotion(Long id) {
+        PromotionRecord record = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Promotion record not found"));
+        
+        if ("APPROVED".equals(record.getStatus())) {
+            throw new RuntimeException("Cannot reject an already approved promotion");
+        }
+
+        record.setStatus("REJECTED");
         return repository.save(record);
     }
 

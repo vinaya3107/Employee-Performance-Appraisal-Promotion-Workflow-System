@@ -21,9 +21,19 @@ public class PromotionController {
         return ResponseEntity.ok(service.getEligiblePromotions());
     }
 
-    @PostMapping("/approve")
-    public ResponseEntity<PromotionRecord> approvePromotion(@RequestBody PromotionRecord record) {
-        return ResponseEntity.ok(service.approvePromotion(record));
+    @PostMapping("/apply")
+    public ResponseEntity<PromotionRecord> applyForPromotion(@RequestBody PromotionRecord record) {
+        return ResponseEntity.ok(service.applyForPromotion(record));
+    }
+
+    @PutMapping("/approve/{id}")
+    public ResponseEntity<PromotionRecord> approvePromotion(@PathVariable Long id) {
+        return ResponseEntity.ok(service.approvePromotion(id));
+    }
+
+    @PutMapping("/reject/{id}")
+    public ResponseEntity<PromotionRecord> rejectPromotion(@PathVariable Long id) {
+        return ResponseEntity.ok(service.rejectPromotion(id));
     }
 
     @GetMapping("/employee/{employeeId}")

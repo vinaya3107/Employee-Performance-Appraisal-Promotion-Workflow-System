@@ -9,10 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+    public ResponseEntity<java.util.Map<String, Object>> handleRuntimeException(RuntimeException ex) {
         System.err.println("RuntimeException caught: " + ex.getMessage());
         ex.printStackTrace();
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        java.util.Map<String, Object> body = new java.util.HashMap<>();
+        body.put("error", "Bad Request");
+        body.put("message", ex.getMessage());
+        body.put("status", HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)

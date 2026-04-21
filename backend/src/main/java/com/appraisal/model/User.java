@@ -42,6 +42,7 @@ public class User implements UserDetails {
 
     private String department;
     private String designation;
+    private Double salary;
     private LocalDate joiningDate;
 
     @JsonIgnore

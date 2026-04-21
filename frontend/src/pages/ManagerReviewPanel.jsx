@@ -110,7 +110,9 @@ const ManagerReviewPanel = () => {
       toast.success(`Review submitted for ${selectedReport.name}`);
       setSelectedReport(null);
     } catch (err) {
-      toast.error('Failed to submit review');
+      const errorMessage = err.response?.data?.message || 'Failed to submit review';
+      toast.error(errorMessage);
+      console.error('Submission error:', err);
     } finally {
       setSaving(false);
     }
